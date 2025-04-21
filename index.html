@@ -20,6 +20,14 @@
 let lines = [];
 let spacing = 20;
 let phase = 0;
+let scrollY = 0;
+
+// Listen for scrollY updates from parent page
+window.addEventListener('message', (event) => {
+  if (event.data && typeof event.data.scrollY === 'number') {
+    scrollY = event.data.scrollY;
+  }
+});
 
 function setup() {
   createCanvas(windowWidth, 400);
@@ -34,7 +42,6 @@ function draw() {
   clear();
   phase += 0.01;
 
-  let scrollY = window.scrollY || 0;
   let section = getScrollSection(scrollY);
 
   for (let i = 0; i < lines.length; i++) {
@@ -42,13 +49,10 @@ function draw() {
     for (let x = 0; x < width; x += 10) {
       let y;
       if (section === 1) {
-        // Gentle sound waves
         y = lines[i] + sin(x * 0.015 + phase + i) * 10;
       } else if (section === 2) {
-        // Structured schematic
         y = lines[i];
       } else {
-        // Hybrid: controlled wave
         y = lines[i] + sin(x * 0.02 + phase + i) * 4 + cos(x * 0.01 + i) * 2;
       }
       vertex(x, y);
@@ -58,9 +62,9 @@ function draw() {
 }
 
 function getScrollSection(scrollY) {
-  if (scrollY < 300) return 1;         // "sound"
-  else if (scrollY < 1000) return 2;   // "structure"
-  else return 3;                       // "stuff in between"
+  if (scrollY < 300) return 1;
+  else if (scrollY < 1000) return 2;
+  else return 3;
 }
 
 function windowResized() {
