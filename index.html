@@ -22,7 +22,6 @@ let spacing = 20;
 let phase = 0;
 let scrollY = 0;
 
-// Listen for scrollY updates from parent page
 window.addEventListener('message', (event) => {
   if (event.data && typeof event.data.scrollY === 'number') {
     scrollY = event.data.scrollY;
@@ -36,6 +35,10 @@ function setup() {
   for (let y = 0; y < height; y += spacing) {
     lines.push(y);
   }
+  textSize(16);
+  textAlign(LEFT, TOP);
+  fill(255);
+  noStroke();
 }
 
 function draw() {
@@ -44,6 +47,7 @@ function draw() {
 
   let section = getScrollSection(scrollY);
 
+  stroke(255, 120);
   for (let i = 0; i < lines.length; i++) {
     beginShape();
     for (let x = 0; x < width; x += 10) {
@@ -59,6 +63,14 @@ function draw() {
     }
     endShape();
   }
+
+  // Debug overlay
+  noStroke();
+  fill(255);
+  rect(0, 0, 300, 60);
+  fill(0);
+  text("scrollY: " + scrollY.toFixed(0), 10, 10);
+  text("section: " + section, 10, 30);
 }
 
 function getScrollSection(scrollY) {
