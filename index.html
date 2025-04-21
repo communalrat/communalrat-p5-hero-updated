@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<script>
+let lines = [];
+let spacing = 20;
+let phase = 0;
+
+function setup() {
+  createCanvas(windowWidth, 400);
+  noFill();
+  stroke(255, 120);
+  for (let y = 0; y < height; y += spacing) {
+    lines.push(y);
+  }
+}
+
+function draw() {
+  clear();
+  phase += 0.01;
+
+  let scrollY = window.scrollY || 0;
+  let section = getScrollSection(scrollY);
+
+  for (let i = 0; i < lines.length; i++) {
+    beginShape();
+    for (let x = 0; x < width; x += 10) {
+      let y;
+      if (section === 1) {
+        // Gentle sound waves
+        y = lines[i] + sin(x * 0.015 + phase + i) * 10;
+      } else if (section === 2) {
+        // Structured schematic
+        y = lines[i];
+      } else {
+        // Hybrid: controlled wave
+        y = lines[i] + sin(x * 0.02 + phase + i) * 4 + cos(x * 0.01 + i) * 2;
+      }
+      vertex(x, y);
+    }
+    endShape();
+  }
+}
+
+function getScrollSection(scrollY) {
+  if (scrollY < 200) return 1;         // "sound"
+  else if (scrollY < 700) return 2;    // "structure"
+  else return 3;                       // "stuff in between"
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, 400);
+}
+</script>
+</body>
+</html>
