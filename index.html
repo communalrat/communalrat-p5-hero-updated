@@ -54,11 +54,15 @@ function draw() {
     for (let x = 0; x < width; x += 10) {
       let y;
       if (section === 1) {
+        // Sound: smooth sine wave
         y = lines[i] + sin(x * 0.015 + phase + i) * 10;
       } else if (section === 2) {
-        y = lines[i];
+        // Structure: flatten into clean horizontal line
+        let sine = sin(x * 0.015 + phase + i) * 10;
+        y = lerp(lines[i] + sine, lines[i], 0.9); 
       } else {
-        y = lines[i] + sin(x * 0.02 + phase + i) * 4 + cos(x * 0.01 + i) * 2;
+        // In between: semi-structured modulation
+        y = lines[i] + sin(x * 0.015 + phase + i) * 4 + cos(x * 0.01 + i + phase) * 2;
       }
       vertex(x, y);
     }
@@ -67,9 +71,9 @@ function draw() {
 }
 
 function getScrollSection(scrollY) {
-  if (scrollY < 300) return 1;
-  else if (scrollY < 1000) return 2;
-  else return 3;
+  if (scrollY < 300) return 1;        // "sound"
+  else if (scrollY < 1000) return 2;  // "structure"
+  else return 3;                      // "and the stuff in between"
 }
 
 function windowResized() {
