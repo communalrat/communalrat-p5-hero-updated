@@ -7,11 +7,17 @@
     html, body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
       background: transparent;
+      overflow: hidden;
+      height: 100%;
     }
     canvas {
       display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
     }
   </style>
 </head>
@@ -21,33 +27,28 @@ let lines = [];
 let spacing = 20;
 let phase = 0;
 let scrollY = 0;
+let section = 1;
 
 window.addEventListener('message', (event) => {
   if (event.data && typeof event.data.scrollY === 'number') {
     scrollY = event.data.scrollY;
+    section = getScrollSection(scrollY);
   }
 });
 
 function setup() {
-  createCanvas(windowWidth, 400);
+  createCanvas(windowWidth, windowHeight * 3);
   noFill();
   stroke(255, 120);
   for (let y = 0; y < height; y += spacing) {
     lines.push(y);
   }
-  textSize(16);
-  textAlign(LEFT, TOP);
-  fill(255);
-  noStroke();
 }
 
 function draw() {
   clear();
   phase += 0.01;
 
-  let section = getScrollSection(scrollY);
-
-  stroke(255, 120);
   for (let i = 0; i < lines.length; i++) {
     beginShape();
     for (let x = 0; x < width; x += 10) {
@@ -63,14 +64,6 @@ function draw() {
     }
     endShape();
   }
-
-  // Debug overlay
-  noStroke();
-  fill(255);
-  rect(0, 0, 300, 60);
-  fill(0);
-  text("scrollY: " + scrollY.toFixed(0), 10, 10);
-  text("section: " + section, 10, 30);
 }
 
 function getScrollSection(scrollY) {
@@ -80,7 +73,7 @@ function getScrollSection(scrollY) {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, 400);
+  resizeCanvas(windowWidth, windowHeight * 3);
 }
 </script>
 </body>
